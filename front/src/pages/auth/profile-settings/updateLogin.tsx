@@ -33,43 +33,48 @@ export const UpdateLogin = () => {
       });
   };
 
-  return (
-    <section className="max-w-xl mx-auto bg-white/5 backdrop-blur-sm border border-gray-800 rounded-2xl p-6 shadow-lg mt-6">
-      <div className="flex items-start justify-between">
+ return (
+    <section className="max-w-xl mx-auto bg-black/20 backdrop-blur-sm border border-gray-700/50 rounded-2xl p-8 shadow-xl">
+      <div className="flex items-start justify-between mb-6">
         <div>
-          <h2 className="text-xl font-semibold tracking-tight text-gray-700">
+          <h2 className="text-xl font-semibold tracking-tight text-white">
             Update Login
           </h2>
-          <p className="mt-1 text-sm text-gray-500">
-            Change your login credentials.
+          <p className="mt-1 text-sm text-gray-300">
+            Change your login credentials securely.
           </p>
         </div>
       </div>
 
       <form
         onSubmit={handleSubmit(handleUpdateLogin)}
-        className="mt-6 space-y-4 w-full max-w-md mx-auto"
+        className="space-y-6"
       >
         {/* Login Field */}
         <div>
-          <label className="block text-sm font-medium text-gray-400 mb-2">
+          <label className="block text-sm font-medium text-gray-300 mb-2">
             New Login
           </label>
           <input
             {...register("login", { required: "Please enter a new login" })}
             placeholder="Enter new login"
             autoComplete="new-login"
-            className="w-full rounded-lg border border-gray-700 py-2.5 px-4 text-sm bg-transparent placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+            className="w-full rounded-xl border border-gray-600 py-3 px-4 text-white bg-gray-800/80 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-all duration-300"
           />
           {errors.login && (
-            <p className="text-red-500 text-sm mt-1">{errors.login.message}</p>
+            <p className="text-red-400 text-sm mt-2 flex items-center">
+              <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              {errors.login.message}
+            </p>
           )}
         </div>
 
         {/* Password Field */}
         <div>
-          <label className="block text-sm font-medium text-gray-400 mb-2">
-            Password
+          <label className="block text-sm font-medium text-gray-300 mb-2">
+            Current Password
           </label>
           <input
             {...register("password", {
@@ -81,51 +86,62 @@ export const UpdateLogin = () => {
             })}
             type="password"
             autoComplete="current-password"
-            placeholder="Enter your password"
-            className="w-full rounded-lg border border-gray-700 py-2.5 px-4 text-sm bg-transparent placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+            placeholder="Enter your current password"
+            className="w-full rounded-xl border border-gray-600 py-3 px-4 text-white bg-gray-800/80 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-all duration-300"
           />
 
           {errors.password && (
-            <p className="text-red-500 text-sm mt-1">
+            <p className="text-red-400 text-sm mt-2 flex items-center">
+              <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
               {errors.password.message}
             </p>
           )}
         </div>
 
         {/* Submit Button */}
-        <div className="flex justify-center mt-4">
+        <div className="pt-2">
           <button
             type="submit"
-            className="w-full rounded-lg py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white text-sm font-medium shadow-md hover:opacity-95 transition"
+            className="w-full rounded-xl py-3 bg-gradient-to-r from-gray-700 via-yellow-600 to-yellow-500 text-black font-semibold shadow-lg hover:from-gray-600 hover:via-yellow-500 hover:to-yellow-400 hover:scale-[1.02] transition-all duration-300"
           >
-            Save
+            Update Login
           </button>
         </div>
 
         {/* Success or Error message */}
         {error && (
-          <p className="text-red-500 bg-red-100 border border-red-400 rounded-md px-3 py-2 text-sm mt-2">
-            {error}
-          </p>
+          <div className="bg-red-500/10 border border-red-500/30 rounded-xl px-4 py-3 flex items-center">
+            <svg className="w-5 h-5 text-red-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <p className="text-red-400 text-sm font-medium">{error}</p>
+          </div>
         )}
         {success && (
-          <p className="text-green-500 bg-green-100 border border-green-400 rounded-md px-3 py-2 text-sm mt-2">
-            Login updated successfully!
-          </p>
+          <div className="bg-green-500/10 border border-green-500/30 rounded-xl px-4 py-3 flex items-center">
+            <svg className="w-5 h-5 text-green-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <p className="text-green-400 text-sm font-medium">Login updated successfully!</p>
+          </div>
         )}
 
-
         {/* Bottom actions */}
-        <div className="flex items-center justify-between mt-2">
+        <div className="flex items-center justify-between pt-4 border-t border-gray-700/50">
           <button
             onClick={() => reset()}
             type="button"
-            className="text-sm text-gray-700 hover:text-black transition"
+            className="text-sm text-gray-400 hover:text-yellow-400 transition-colors duration-300 flex items-center"
           >
-            Reset
+            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            Reset Form
           </button>
           <p className="text-xs text-gray-500">
-            Changing login requires your current password.
+            Verification required for security
           </p>
         </div>
       </form>

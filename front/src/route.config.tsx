@@ -4,7 +4,11 @@ import { Login } from "./pages/general/login";
 import { Layout } from "./pages/auth/layout";
 import { Profile } from "./pages/auth/profile";
 import { Posts } from "./pages/auth/posts";
-import { Settings } from "./pages/auth/profile-settings/settings";
+import { Settings } from "./pages/auth/profile-settings";
+import { AddPost } from "./pages/auth/posts/add-post";
+import { Search } from "./pages/auth/search";
+import { Account } from "./pages/auth/account";
+
 
 
 
@@ -22,8 +26,11 @@ export const router = createBrowserRouter([
     element: <Layout />,
     children: [
       {path:"", element: <Profile />},
+      {path:":id", element: <Account />},
       { path: "posts", element: <Posts /> },
-      { path: "settings", element: <Settings /> }   
+      { path: "addPost", element: <AddPost /> },
+      { path: "settings", element: <Settings /> },   
+      { path: "search", element: <Search /> }
     ]
   }
 ])

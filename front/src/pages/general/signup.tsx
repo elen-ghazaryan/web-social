@@ -1,6 +1,6 @@
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import { type IResponse, type NewUser } from "../../types";
+import { type IResponse, type SignupUser } from "../../types";
 import { Axios } from "../../lib/api";
 import axios from "axios";
 import { useState } from "react";
@@ -13,12 +13,12 @@ export const Signup = () => {
     handleSubmit,
     formState: { errors },
     reset
-  } = useForm<NewUser>();
+  } = useForm<SignupUser>();
 
   const navigate = useNavigate()
 
 
-  const handleSignup: SubmitHandler<NewUser> = (data) => {
+  const handleSignup: SubmitHandler<SignupUser> = (data) => {
     Axios
     .post("/signup", data)
     .then(() => {
@@ -26,71 +26,70 @@ export const Signup = () => {
         navigate("/login")
       })
     .catch(err => {
-      if(axios.isAxiosError(err)) {
-        const errorResp = err.response?.data as IResponse
-        setError(errorResp.message)
-      }
+      if (axios.isAxiosError(err)) {
+      const errorResp = err.response?.data as IResponse
+      setError(errorResp.message)
+    } else if (err instanceof Error) {
+      setError(err.message) // handle other JS errors
+    } else {
+      setError("Unknown error")
+    }
     })
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-black p-6">
-      <div className="w-full max-w-md bg-gray-900/80 backdrop-blur-xl shadow-2xl rounded-2xl p-8">
-        <h1 className="text-3xl font-bold text-center text-white mb-6 tracking-wide">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-black to-gray-800 p-6">
+      <div className="w-full max-w-md bg-black/80 backdrop-blur-xl shadow-2xl rounded-2xl p-8 border border-gray-800">
+        <h1 className="text-3xl font-bold text-center text-yellow-400 mb-6 tracking-wide">
           Create an Account
         </h1>
         {error && <p className="text-red-500 my-2">{error}</p>}
         <form onSubmit={handleSubmit(handleSignup)} className="space-y-5">
           {/* Name */}
           <div>
-            {errors.name && (
-              <p className="text-red-400">{errors.name.message}</p>
-            )}
-
             <label className="block text-gray-300 text-sm mb-2">Name</label>
             <input
               {...register("name", { required: "Please fill the name" })}
               type="text"
               placeholder="Enter your name"
-              className="w-full px-4 py-3 rounded-xl bg-gray-800 text-white placeholder-gray-500 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+              className="w-full px-4 py-3 rounded-xl bg-gray-900 text-white placeholder-gray-500 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-500 transition"
             />
+            {errors.name && (
+              <p className="text-red-400 text-sm">{errors.name.message}</p>
+            )}
           </div>
 
           {/* Surname */}
           <div>
-            {errors.surname && (
-              <p className="text-red-400">{errors.surname.message}</p>
-            )}
-
             <label className="block text-gray-300 text-sm mb-2">Surname</label>
             <input
               {...register("surname", { required: "Please fill your surname" })}
               type="text"
               placeholder="Enter your surname"
-              className="w-full px-4 py-3 rounded-xl bg-gray-800 text-white placeholder-gray-500 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+              className="w-full px-4 py-3 rounded-xl bg-gray-900 text-white placeholder-gray-500 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-500 transition"
             />
+             {errors.surname && (
+              <p className="text-red-400 text-sm">{errors.surname.message}</p>
+            )}
+
           </div>
 
           {/* Login */}
           <div>
-            {errors.login && (
-              <p className="text-red-400">{errors.login.message}</p>
-            )}
-
             <label className="block text-gray-300 text-sm mb-2">Login</label>
             <input
               {...register("login", { required: "Please fill your login" })}
               type="text"
               placeholder="Choose a login"
-              className="w-full px-4 py-3 rounded-xl bg-gray-800 text-white placeholder-gray-500 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 transition"
+              className="w-full px-4 py-3 rounded-xl bg-gray-900 text-white placeholder-gray-500 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-500 transition"
             />
+            {errors.login && (
+              <p className="text-red-400 text-sm">{errors.login.message}</p>
+            )}
           </div>
 
           {/* Password */}
           <div>
-            {errors.password && (
-              <p className="text-red-400">{errors.password.message}</p>
-            )}
             <label className="block text-gray-300 text-sm mb-2">Password</label>
             <input
               {...register("password", {
@@ -99,14 +98,17 @@ export const Signup = () => {
               })}
               type="password"
               placeholder="Enter your password"
-              className="w-full px-4 py-3 rounded-xl bg-gray-800 text-white placeholder-gray-500 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-pink-500 transition"
+              className="w-full px-4 py-3 rounded-xl bg-gray-900 text-white placeholder-gray-500 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-500 transition"
             />
+            {errors.password && (
+              <p className="text-red-400 text-sm">{errors.password.message}</p>
+            )}
           </div>
 
           {/* Submit */}
           <button
             type="submit"
-            className="w-full py-3 rounded-xl bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white font-semibold text-lg shadow-lg hover:scale-[1.02] transition-transform"
+            className="w-full py-3 rounded-xl bg-gradient-to-r from-gray-700 via-yellow-600 to-yellow-500 text-black font-semibold text-lg shadow-lg hover:scale-[1.02] hover:from-gray-600 hover:via-yellow-500 hover:to-yellow-400 transition-all"
           >
             Sign Up
           </button>
@@ -114,11 +116,11 @@ export const Signup = () => {
 
         <p className="text-gray-400 text-sm text-center mt-6">
           Already have an account?{" "}
-          <Link to="/login" className="text-blue-400 hover:underline">
+          <Link to="/login" className="text-yellow-400 hover:text-yellow-300 hover:underline">
             Login here
           </Link>
         </p>
       </div>
     </div>
   );
-};
+}
