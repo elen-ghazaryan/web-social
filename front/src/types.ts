@@ -29,6 +29,11 @@ export interface IConnection {
   didIBlock: boolean
 }
 
+export interface IRequest {
+  id: number
+  user: Omit<IUser, 'password' | 'login'>
+}
+
 // User type for signup (excludes auto-generated or optional fields)
 export type SignupUser = Omit<IUser, "id" | "picture" | "cover" | "isPrivate">
 
@@ -56,8 +61,8 @@ export interface IResponse<T = unknown> {
 // ---------------------------
 
 export interface IContext {
-  account: IUser
-  setAccount: (user: IUser) => void
+  account: IAccount
+  setAccount: (user: IAccount) => void
 }
 
 // ---------------------------

@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
-import { Outlet, NavLink, useNavigate } from "react-router-dom";
+import { Outlet, NavLink, useNavigate, Link } from "react-router-dom";
 import { Axios } from "../../lib/api";
-import { type IUser, type IResponse } from "../../types";
+import { type IResponse, type IAccount } from "../../types";
 import { ProfileImage } from "../../lib/helpers/profileImage";
 
 export const Layout = () => {
   const navigate = useNavigate()
-  const [account, setAccount] = useState<IUser | null>(null)
+  const [account, setAccount] = useState<IAccount | null>(null)
 
   useEffect(() => {
     Axios.get<IResponse>("/verify")
     .then(response => {
-      setAccount(response.data.payload as IUser)
+      setAccount(response.data.payload as IAccount)
     })
     .catch(() => 
       navigate("/login")
@@ -77,32 +77,6 @@ export const Layout = () => {
             </NavLink>
 
             <NavLink
-              to="/profile/followers"
-              className={({ isActive }) =>
-                `px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 transform hover:scale-105 ${
-                  isActive
-                    ? "bg-gradient-to-r from-gray-700 via-yellow-600 to-yellow-500 text-black shadow-lg shadow-yellow-500/25"
-                    : "hover:bg-gray-800 hover:shadow-md text-gray-300 hover:text-yellow-400"
-                }`
-              }
-            >
-              Followers
-            </NavLink>
-
-            <NavLink
-              to="/profile/followings"
-              className={({ isActive }) =>
-                `px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 transform hover:scale-105 ${
-                  isActive
-                    ? "bg-gradient-to-r from-gray-700 via-yellow-600 to-yellow-500 text-black shadow-lg shadow-yellow-500/25"
-                    : "hover:bg-gray-800 hover:shadow-md text-gray-300 hover:text-yellow-400"
-                }`
-              }
-            >
-              Followings
-            </NavLink>
-
-            <NavLink
               to="/profile/settings"
               className={({ isActive }) =>
                 `px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 transform hover:scale-105 ${
@@ -121,11 +95,14 @@ export const Layout = () => {
               <div className="text-right hidden sm:block">
                 <p className="text-sm font-semibold text-white">{account.name} {account.surname}</p>
               </div>
-              <ProfileImage
-                src={account.picture ?? undefined}
-                alt="Profile"
-                className="w-10 h-10 rounded-full border-2 border-gray-700 hover:border-yellow-400 transition-colors"
-              />
+              <Link to="/profile">
+                <ProfileImage
+                  src={account.picture ?? undefined}
+                  alt="Profile"
+                  className="w-10 h-10 rounded-full border-2 border-gray-700 hover:border-yellow-400 transition-colors"
+                />
+              </Link>
+              
             </div>
           
           </div>

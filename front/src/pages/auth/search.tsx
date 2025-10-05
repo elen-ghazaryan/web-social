@@ -3,23 +3,24 @@ import { type IResponse, type IUser } from "../../types"
 import { Axios } from "../../lib/api"
 import { ProfileImage } from "../../lib/helpers/profileImage"
 import { Link } from "react-router-dom"
+import { useDebounce } from "../../lib/hooks/useDebounce"
 
 
 export const Search = () => {
   const [text, setText] = useState("")
+  const searchText = useDebounce(text, 400);
   const [users, setUsers] = useState<IUser[]>([])
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    if(!text) {
+    if(!searchText) {
       setUsers([])
       setLoading(false)
       return
     }
     
     setLoading(true)
-    const timeoutId = setTimeout(() => {
-      Axios.get<IResponse<IUser[]>>(`/search/${text}`)
+    Axios.get<IResponse<IUser[]>>(`/search/${searchText}`)
       .then(response => {
           setUsers(response.data.payload)
           setLoading(false)
@@ -28,10 +29,8 @@ export const Search = () => {
         console.error(err)
         setLoading(false)
       })
-    }, 500) // Debounce: wait 500ms after user stops typing
-    
-    return () => clearTimeout(timeoutId) // Cleanup on text change
-  },[text])
+
+  },[searchText])
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 py-12">
@@ -164,7 +163,6 @@ export const Search = () => {
                         </div>
                       )}
                     </div>
-                    <p className="text-gray-400 text-sm">@{user.login || 'user'}</p>
                   </div>
 
                   {/* View Profile Button */}
@@ -186,3 +184,15 @@ export const Search = () => {
     </div>
   )
 }
+
+
+
+//debouncing 
+/* 
+erb der usery grum e da nshanakum e der request chuxarkel, erb aylevs chi grum yst delay-i(2tareri grelu mijev jamanakamijoc)
+orinak ete 400mv ancav ev usery aylevs chi grum, request karox e gnal, hakarak depqum noric 0ic e skksum hashvark
+
+setTimeout(cb, T1)
+*/
+
+/*throateling-ankax useri arac gorcoxutyunneric request gnum e hstak vorosh sahmanvac jamanaky mek miayn */
