@@ -1,33 +1,23 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { data, useNavigate, useParams } from "react-router-dom";
 import { Axios } from "../../lib/api";
 import { type IResponse, type IAccount, type IUser } from "../../types";
 import { ProfileImage } from "../../lib/helpers/profileImage";
 import { useHTTP } from "../../lib/hooks/useHTTP";
+import { PostItem } from "./posts/post-item";
 
 export const Account = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   
   const { loading, data: account, error, refetch } = useHTTP<IAccount>("/account/" + id, { method: "GET" })
-  console.log(account)
-  // useEffect(() => {
-  //   setLoading(true);
-  //   Axios.get<IResponse<IAccount>>(`/account/${id}`)
-  //     .then((response) => {
-  //       if (!response.data.payload) {
-  //         return navigate("/profile");
-  //       }
-  //       setAccount(response.data.payload);
-  //       setLoading(false);
-  //     })
-  //     .catch((err) => {
-  //       console.error(err);
-  //       setLoading(false);
-  //     });
-  // }, [id]);
-
   const handleFollow = () => {
     Axios.post<IResponse<IUser>>(`/account/follow/${account?.id}`)
+    .then(() => refetch())
+  }
+
+  const handleBlock = () => {
+    if(!account) return;
+    Axios.post<IResponse<IUser>>(`/block/${account.id}`)
     .then(() => refetch())
   }
 
@@ -84,7 +74,7 @@ export const Account = () => {
           <p className="text-gray-300 text-lg mb-2">
             Oops!{" "}
             <span className="text-yellow-400 font-semibold">
-              {account.name}
+              {account.name} {account.surname}
             </span>{" "}
             has blocked you.
           </p>
@@ -146,7 +136,7 @@ export const Account = () => {
           <p className="text-gray-300 text-lg mb-2">
             You have blocked{" "}
             <span className="text-yellow-400 font-semibold">
-              {account.name}
+              {account.name} {account.surname}
             </span>
             .
           </p>
@@ -156,7 +146,7 @@ export const Account = () => {
 
           {/* Action Buttons */}
           <div className="space-y-3">
-            <button className="w-full py-3 rounded-xl bg-gradient-to-r from-gray-700 via-yellow-600 to-yellow-500 text-black font-semibold shadow-lg hover:from-gray-600 hover:via-yellow-500 hover:to-yellow-400 hover:scale-[1.02] transition-all duration-300 flex items-center justify-center">
+            <button onClick={handleBlock} className="w-full py-3 rounded-xl bg-gradient-to-r from-gray-700 via-yellow-600 to-yellow-500 text-black font-semibold shadow-lg hover:from-gray-600 hover:via-yellow-500 hover:to-yellow-400 hover:scale-[1.02] transition-all duration-300 flex items-center justify-center">
               <svg
                 className="w-5 h-5 mr-2"
                 fill="none"
@@ -358,9 +348,9 @@ export const Account = () => {
                   </svg>
                   Cancel Request
                 </button>
-              ) : account.connection.folloswMe ? (
+              ) : account.connection.followsMe ? (
                 // They follow you but you don't follow them - show Follow Back
-                <button onClick={handleFollow} className="w-full py-3 rounded-xl bg-gradient-to-r from-blue-600 via-blue-500 to-blue-400 text-white font-semibold text-lg shadow-lg hover:scale-[1.02] hover:from-blue-500 hover:via-blue-400 hover:to-blue-300 transition-all flex items-center justify-center">
+                <button onClick={handleFollow} className="w-full py-3 rounded-xl bg-gradient-to-r from-blue-950 via-blue-800 to-blue-700 text-white font-semibold text-lg shadow-lg hover:scale-[1.02] hover:from-blue-700 hover:via-blue-600 hover:to-blue-400 transition-all flex items-center justify-center">
                   <svg
                     className="w-5 h-5 mr-2"
                     fill="none"
@@ -395,10 +385,14 @@ export const Account = () => {
                   Follow
                 </button>
               )}
+              <button 
+                onClick={handleBlock}
+                className="w-full py-3 rounded-xl bg-gradient-to-r from-gray-700 via-yellow-600 to-yellow-500 text-black font-semibold text-lg shadow-lg hover:scale-[1.02] hover:from-gray-600 hover:via-yellow-500 hover:to-yellow-400 transition-all flex items-center justify-center"
+              >Block User</button>
             </div>
 
             {/* Private Account-No posts */}
-            {account.isPrivate && (
+            {(account.isPrivate && !account.connection.following) && (
               <div className="flex flex-col items-center justify-center mx-auto bg-black/30 rounded-2xl border border-gray-700 p-8 text-center w-full max-w-md">
                 {/* Casual Padlock Icon */}
                 <svg
@@ -430,7 +424,9 @@ export const Account = () => {
 
 
             {/* Posts Section */}
-            {(!account.isPrivate && account.posts && account.posts.length > 0) && (
+            {((!account.isPrivate || account.connection.following) &&
+              account.posts &&
+              account.posts.length > 0) && (
               <div>
                 {/* Posts Header */}
                 <div className="mb-8">
@@ -451,80 +447,7 @@ export const Account = () => {
                 {/* Posts Grid */}
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {account.posts.map((post) => (
-                    <article
-                      key={post.id}
-                      className="bg-black/40 backdrop-blur-xl rounded-2xl overflow-hidden border border-gray-800/50 hover:border-yellow-500/30 transition-all duration-300 hover:shadow-2xl hover:shadow-yellow-500/10 hover:scale-[1.02] group"
-                    >
-                      {/* Post Image */}
-                      <div className="relative overflow-hidden aspect-square bg-gray-800">
-                        <img
-                          src={import.meta.env.VITE_BASE + post.picture}
-                          alt="Post"
-                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                      </div>
-
-                      {/* Post Content */}
-                      <div className="p-6">
-                        <p className="text-gray-300 leading-relaxed line-clamp-3">
-                          {post.title}
-                        </p>
-
-                        {/* Post Actions */}
-                        <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-700/50">
-                          <div className="flex items-center space-x-4 text-sm text-gray-400">
-                            <button className="flex items-center hover:text-yellow-400 transition-colors">
-                              <svg
-                                className="w-4 h-4 mr-1"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                                />
-                              </svg>
-                              Like
-                            </button>
-                            <button className="flex items-center hover:text-yellow-400 transition-colors">
-                              <svg
-                                className="w-4 h-4 mr-1"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-                                />
-                              </svg>
-                              Comment
-                            </button>
-                          </div>
-                          <button className="text-gray-400 hover:text-yellow-400 transition-colors">
-                            <svg
-                              className="w-5 h-5"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"
-                              />
-                            </svg>
-                          </button>
-                        </div>
-                      </div>
-                    </article>
+                    <PostItem key={post.id} post={post} isOwner={false} />
                   ))}
                 </div>
               </div>

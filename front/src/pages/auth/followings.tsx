@@ -8,7 +8,7 @@ export const Followings = () => {
   const [followings, setFollowings] = useState<IUser[]>([]);
 
   useEffect(() => {
-    Axios.get("/followings")
+    Axios.get("/following")
       .then((resp) => {
         setFollowings(resp.data.payload);
       })

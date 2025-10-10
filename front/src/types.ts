@@ -16,14 +16,14 @@ export interface IUser {
 export type IAccount = Omit<IUser, 'password' | 'login'> & {
   connection: IConnection
   posts: IPost[]
-  followers: IUser[]
-  following: IUser[]
+  followers: Omit<IUser, 'login' | 'password'>[]
+  following: Omit<IUser, 'login' | 'password'>[]
 
 }
 
 export interface IConnection {
   following: boolean
-  folloswMe: boolean
+  followsMe: boolean
   requested: boolean
   blockedMe: boolean
   didIBlock: boolean
@@ -72,7 +72,19 @@ export interface IContext {
 export interface IPost {
   picture: File
   title: string
-  likes: number[]
+  likes: IUser[]
+  comments: IComment[]
   userId: number
   id: number
+}
+
+export interface IComment {
+  content: string
+  id:number
+  user: {
+    id: number
+    name: string
+    surname: string
+    picture: string
+  }
 }

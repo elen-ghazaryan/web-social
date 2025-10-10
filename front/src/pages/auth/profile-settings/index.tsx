@@ -1,11 +1,22 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { UpdateLogin } from "./updateLogin";
 import { UpdatePassword } from "./updatePassword";
 import { ImagePicker } from "./utilities/image-picker";
 import { CoverPicker } from "./utilities/cover-picker";
 import { UpdateStatus } from "./updateStatus";
+import { useEffect } from "react";
 
 export const Settings = () => {
+  const location = useLocation();
+   useEffect(() => {
+    if (location.hash) {
+      const element = document.querySelector(location.hash);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  }, [location]);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 py-12">
       <div className="max-w-5xl mx-auto px-6 space-y-10">
@@ -61,7 +72,7 @@ export const Settings = () => {
         
 
         {/* Cover Picture */}
-          <div className="bg-black/40 backdrop-blur-xl p-8 rounded-2xl shadow-2xl border border-gray-800/50 hover:border-yellow-500/30 transition-all duration-300 hover:shadow-yellow-500/10">
+          <div id="coverPicture" className="bg-black/40 backdrop-blur-xl p-8 rounded-2xl shadow-2xl border border-gray-800/50 hover:border-yellow-500/30 transition-all duration-300 hover:shadow-yellow-500/10">
             <div className="flex items-center mb-6">
               <div className="w-12 h-12 bg-gradient-to-r from-yellow-500 to-yellow-400 rounded-xl flex items-center justify-center mr-4 shadow-lg">
                 <svg className="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -78,15 +89,6 @@ export const Settings = () => {
         
         {/* Account Status */}
           <div className="bg-black/40 backdrop-blur-xl p-8 rounded-2xl shadow-2xl border border-gray-800/50 hover:border-yellow-500/30 transition-all duration-300 hover:shadow-yellow-500/10">
-            <div className="flex items-center mb-6">
-              <div className="w-12 h-12 bg-gradient-to-r from-yellow-500 to-yellow-400 rounded-xl flex items-center justify-center mr-4 shadow-lg">
-                <svg className="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0118.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-              </div>
-              <h2 className="text-2xl font-bold text-yellow-400">Cover Picture</h2>
-            </div>
             <UpdateStatus />
           </div>
         </div>

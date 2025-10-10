@@ -8,6 +8,7 @@ import { Settings } from "./pages/auth/profile-settings";
 import { AddPost } from "./pages/auth/posts/add-post";
 import { Search } from "./pages/auth/search";
 import { Account } from "./pages/auth/account";
+import { PostDetails } from "./pages/auth/posts/post-details";
 
 
 
@@ -28,6 +29,7 @@ export const router = createBrowserRouter([
       {path:"", element: <Profile />},
       {path:":id", element: <Account />},
       { path: "posts", element: <Posts /> },
+      { path: "posts/:id", element: <PostDetails /> },
       { path: "addPost", element: <AddPost /> },
       { path: "settings", element: <Settings /> },   
       { path: "search", element: <Search /> }

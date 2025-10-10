@@ -186,13 +186,3 @@ export const Search = () => {
 }
 
 
-
-//debouncing 
-/* 
-erb der usery grum e da nshanakum e der request chuxarkel, erb aylevs chi grum yst delay-i(2tareri grelu mijev jamanakamijoc)
-orinak ete 400mv ancav ev usery aylevs chi grum, request karox e gnal, hakarak depqum noric 0ic e skksum hashvark
-
-setTimeout(cb, T1)
-*/
-
-/*throateling-ankax useri arac gorcoxutyunneric request gnum e hstak vorosh sahmanvac jamanaky mek miayn */

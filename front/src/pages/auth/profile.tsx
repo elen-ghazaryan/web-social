@@ -22,7 +22,7 @@ export const Profile = () => {
 
 
 return (
-    <div className="pb-10 relative min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800">
+    <div className="pb-10 relative min-h-screen bg-gradient-to-br bg-no-repeat from-gray-900 via-black to-gray-800">
       <div className="max-w-4xl mx-auto mb-20">
         {/* Cover Photo Section */}
         <div className="relative">
@@ -37,11 +37,11 @@ return (
             ) : (
               <div className="w-full h-full bg-gradient-to-br from-gray-800 via-yellow-600/20 to-gray-900 flex items-center justify-center">
                 <div className="text-center">
-                  <div className="w-16 h-16 bg-yellow-400/20 rounded-full mx-auto mb-4 flex items-center justify-center">
+                  <Link to="/profile/settings#coverPicture" className="w-16 h-16 bg-yellow-400/20 rounded-full mx-auto mb-4 flex items-center justify-center">
                     <svg className="w-8 h-8 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
-                  </div>
+                  </Link>
                   <p className="text-yellow-400 font-semibold">Add Cover Photo</p>
                 </div>
               </div>
@@ -129,7 +129,7 @@ return (
               onClick={() => setOpenFlwers(false)}
             >
               <div
-                className="w-full max-w-2xl bg-zinc-900 rounded-xl border border-zinc-700 shadow-2xl max-h-[90vh] overflow-hidden"
+                className="w-full max-w-xl bg-zinc-900 rounded-xl border border-zinc-700 shadow-2xl max-h-[90vh] overflow-hidden"
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="p-6">
@@ -170,7 +170,7 @@ return (
               onClick={() => setOpenFlwings(false)}
             >
               <div
-                className="w-full max-w-2xl bg-zinc-900 rounded-xl border border-zinc-700 shadow-2xl max-h-[90vh] overflow-hidden"
+                className="w-full max-w-xl bg-zinc-900 rounded-xl border border-zinc-700 shadow-2xl max-h-[90vh] overflow-hidden"
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="p-6">

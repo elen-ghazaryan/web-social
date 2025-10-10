@@ -10,6 +10,7 @@ export const Followers = () => {
   useEffect(() => {
     Axios.get<IResponse<IUser[]>>("/followers")
       .then((resp) => {
+        console.log(resp.data)
         setFollowers(resp.data.payload);
       })
   }, [])

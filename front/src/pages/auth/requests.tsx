@@ -1,26 +1,34 @@
 import { useEffect, useState } from "react"
 import { Axios } from "../../lib/api"
-import type { IRequest, IResponse } from "../../types"
+import { type IContext, type IRequest, type IResponse } from "../../types"
 import { ProfileImage } from "../../lib/helpers/profileImage";
+import { useOutletContext } from "react-router-dom";
 
 export const Requests = () => {
+  const { account, setAccount } = useOutletContext<IContext>()
   const [requests, setRequests] = useState<IRequest[]>([]);
   const [isOpen, setIsOpen] = useState(false)
-
+  
   useEffect(() => {
     Axios.get<IResponse<IRequest[]>>("/requests")
       .then(resp => setRequests(resp.data.payload));
   }, []);
 
-  const handleAccept = (requestId: number) => {
-    Axios.patch("/requests/accept/" + requestId)
-    .then(() => setRequests(prev => prev.filter(req => req.id !== requestId)))
+  const handleAccept = (req: IRequest) => {
+    Axios.patch("/requests/accept/" + req.id)
+    .then(() => {
+      setRequests(prev => prev.filter(request => request.id !== req.id))
+      setAccount({
+        ...account,
+        followers: [...account.followers, { id: req.user.id, name: req.user.name, surname: req.user.surname, picture: req.user.picture, isPrivate:req.user.isPrivate, cover: req.user.cover }]
+      });
+    })
     .catch(err => console.error(err))
   };
 
-  const handleDecline = (requestId: number) => {
-    Axios.patch("/requests/decline/" + requestId)
-    .then(() => setRequests(prev => prev.filter(req => req.id !== requestId)))
+  const handleDecline = (req: IRequest) => {
+    Axios.patch("/requests/decline/" + req.id)
+    .then(() => setRequests(prev => prev.filter(request => request.id !== req.id)))
     .catch(err => console.error(err))
   };
 
@@ -105,13 +113,13 @@ export const Requests = () => {
                       
                       <div className="flex gap-3 flex-shrink-0">
                         <button
-                          onClick={() => handleAccept(req.id)}
+                          onClick={() => handleAccept(req)}
                           className="px-6 py-2 bg-gradient-to-r from-gray-700 via-yellow-600 to-yellow-500 hover:scale-[1.02] hover:from-gray-600 hover:via-yellow-500 hover:to-yellow-400 text-black font-semibold rounded-lg transition-colors"
                         >
                           Accept
                         </button>
                         <button
-                          onClick={() => handleDecline(req.id)}
+                          onClick={() => handleDecline(req)}
                           className="px-6 py-2 bg-zinc-700 hover:bg-zinc-600 hover:scale-[1.02] text-gray-300 font-semibold rounded-lg border border-zinc-600 transition-colors"
                         >
                           Decline

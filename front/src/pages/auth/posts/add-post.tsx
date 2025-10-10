@@ -23,21 +23,22 @@ export const AddPost = () => {
   };
 
   const handleUpload = () => {
-    if (postInput.current?.files && content) {
-      const file = postInput.current.files[0];
-
-      const form = new FormData();
-      form.append("photo", file);
-      form.append("content", content);
-
-      Axios.post<IResponse<IPost>>("/posts", form)
-        .then(() => {
-          navigate("/profile/posts");
-        })
-        .catch((err) => setError(err));
-    } else {
+    const file = postInput.current?.files?.[0];
+    if (!file || !content.trim()) {
       setError("Both fields are required!");
+      return;
     }
+
+    const form = new FormData();
+    form.append("photo", file);
+    form.append("content", content);
+    
+    Axios.post<IResponse<IPost>>("/posts", form)
+    .then(() => {
+      navigate("/profile/posts");
+    })
+    .catch(err => setError(err.response?.data?.message || err.message || "Something went wrong!"))
+    
   };
 
   return (

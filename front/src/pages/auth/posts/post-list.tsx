@@ -3,9 +3,10 @@ import { type IPost, type IResponse} from "../../../types"
 import { Axios } from "../../../lib/api"
 import axios from "axios"
 import { Link } from "react-router-dom"
+import { PostItem } from "./post-item"
 
 export const PostList= () => {
-  const [posts, setPosts] = useState<IPost[] | null>(null)
+  const [posts, setPosts] = useState<IPost[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -27,10 +28,15 @@ export const PostList= () => {
       })
   }, [])
 
+  const handleDelete = (id: number) => {
+    Axios.delete(`/posts/${id}`)
+    .then(() => setPosts(prev => prev.filter(post => post.id !== id)))
+  }
+
   // Loading State
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 flex items-center justify-center p-6">
+      <div className="min-h-screen flex items-center justify-center p-2">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-gray-700 border-t-yellow-500 rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-gray-400 text-lg">Loading posts...</p>
@@ -42,7 +48,7 @@ export const PostList= () => {
   // Error State
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 flex items-center justify-center p-6">
+      <div className="min-h-screen flex items-center justify-center p-2">
         <div className="bg-red-500/10 border border-red-500/30 rounded-2xl px-8 py-6 max-w-md">
           <div className="flex items-center mb-4">
             <svg className="w-8 h-8 text-red-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -59,7 +65,7 @@ export const PostList= () => {
   // Empty State
   if (!posts || posts.length === 0) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 flex items-center justify-center p-6">
+      <div className="min-h-screen flex items-center justify-center p-2">
         <div className="text-center max-w-md">
           <div className="w-32 h-32 bg-gradient-to-br from-gray-800 to-gray-700 rounded-full mx-auto mb-6 flex items-center justify-center">
             <svg className="w-16 h-16 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -105,50 +111,7 @@ export const PostList= () => {
         {/* Posts Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {posts.map(post => (
-            <article 
-              key={post.id} 
-              className="bg-black/40 backdrop-blur-xl rounded-2xl overflow-hidden border border-gray-800/50 hover:border-yellow-500/30 transition-all duration-300 hover:shadow-2xl hover:shadow-yellow-500/10 hover:scale-[1.02] group"
-            >
-              {/* Post Image */}
-              <div className="relative overflow-hidden aspect-square bg-gray-800">
-                <img 
-                  src={import.meta.env.VITE_BASE + post.picture} 
-                  alt="Post"
-                  className="w-full h-full object-cover group-hover:transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              </div>
-
-              {/* Post Content */}
-              <div className="p-6">
-                <p className="text-gray-300 leading-relaxed line-clamp-3">
-                  {post.title}
-                </p>
-
-                {/* Post Actions */}
-                <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-700/50">
-                  <div className="flex items-center space-x-4 text-sm text-gray-400">
-                    <button className="flex items-center hover:text-yellow-400 transition-colors">
-                      <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                      </svg>
-                      Like
-                    </button>
-                    <button className="flex items-center hover:text-yellow-400 transition-colors">
-                      <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                      </svg>
-                      Comment
-                    </button>
-                  </div>
-                  <button className="text-gray-400 hover:text-yellow-400 transition-colors">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
-                    </svg>
-                  </button>
-                </div>
-              </div>
-            </article>
+            <PostItem key={post.id} post={post} isOwner={true} onDelete={handleDelete}/>
           ))}
         </div>
       </div>
