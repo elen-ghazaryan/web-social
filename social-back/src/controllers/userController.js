@@ -14,7 +14,7 @@ class UserController{
       password = await bcrypt.hash(password, 10)
       
       const user = await User.create({ name, surname, username, password })
-      return res.status(201).send({ message: "User successfully created", id: user.id })
+      return res.status(201).send({ message: "User successfully created", payload: { id: user.id }})
     } catch(err) {
       return res.status(400).send({ message: err.message })
     }
@@ -25,7 +25,7 @@ class UserController{
     const { username, password } = req.body
 
     if(!username?.trim() || !password?.trim()) {
-      res.status(400).send({message: "Missing fields. Both username and password are required." })
+      res.status(400).send({ message: "Missing fields. Both username and password are required." })
     }
 
     const user = await User.findOne({ username })
@@ -42,14 +42,14 @@ class UserController{
       {expiresIn: '7d'}
     )
 
-    return res.send({ message: "Success", payload: { token } })
+    return res.send({success: true, message: "Successfully logined", payload: { token } })
   }
 
   async getUser(req, res) {
     const userData = req.user.toObject();
     delete userData.password;
     
-    res.send({ userData })
+    res.send({ message: "Ok", payload : { userData } })
   }
 
   async updateUsername (req, res) {
@@ -78,6 +78,23 @@ class UserController{
       console.error(err)
       return res.status(500).send({ message: "Internal server error." })
     }
+  }
+
+  async uploadAvatar(req, res) {
+    if(!req.file) return res.status(400).send({ message: "File is not provided" })
+    const id = req.user._id
+    const user = await User.findById(id)
+    user.avatar = req.file.filename
+    await user.save()
+    res.send({ message: "Successfully updated", payload: { picture: req.file.filename }})
+  }
+
+  async switchPrivacy(req, res) {
+    const user = await User.findById(req.user._id)
+    user.isPrivate = !user.isPrivate
+    await user.save()
+
+    res.send({ message:`Now your account is ${user.isPrivate ? 'private' : 'public'}`, payload: { isPrivate: user.isPrivate }})
   }
 }
 
